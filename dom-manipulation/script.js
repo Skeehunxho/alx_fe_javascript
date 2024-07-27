@@ -169,7 +169,7 @@ async function syncQuotes() {
       quotes.push(...newQuotes);
       saveQuotes();
       populateCategories();
-      alert("New quotes have been added from the server!");
+      showNotification("Quotes synced with server!");
   }
 
   // Find new local quotes and post them to the server
@@ -179,4 +179,13 @@ async function syncQuotes() {
   }
 
   // Optionally, we could implement further conflict resolution here
+}
+
+function showNotification(message) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.style.display = 'block';
+  setTimeout(() => {
+      notification.style.display = 'none';
+  }, 5000);
 }
