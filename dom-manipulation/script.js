@@ -3,7 +3,7 @@ let quotes = JSON.parse(localStorage.getItem('quotes')) || [{
   category: "General"
 }];
 
-let categories = [];
+let categories = Array.from(new Set(quotes.map(quote => quote.category)));
 
 function saveQuotes() {
   localStorage.setItem('quotes', JSON.stringify(quotes));
@@ -58,6 +58,7 @@ function importFromJsonFile(event) {
   fileReader.onload = function(event) {
       const importedQuotes = JSON.parse(event.target.result);
       quotes.push(...importedQuotes);
+      categories = Array.from(new Set(quotes.map(quote => quote.category)));
       saveQuotes();
       populateCategories();
       alert('Quotes imported successfully!');
