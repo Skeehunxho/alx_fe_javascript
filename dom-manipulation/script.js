@@ -138,18 +138,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const lastSelectedCategory = getLastSelectedCategory();
   document.getElementById('categoryFilter').value = lastSelectedCategory;
   filterQuotes();
-  syncWithServer();
-  setInterval(syncWithServer, 60000); // Sync with the server every minute
+  syncQuotes();
+  setInterval(syncQuotes, 60000); // Sync with the server every minute
 });
 
-async function fetchServerQuotes() {
+async function fetchQuotesFromServer() {
   const response = await fetch(SERVER_URL);
   const serverQuotes = await response.json();
   return serverQuotes.map(item => ({ text: item.title, category: "Server" }));
 }
 
-async function syncWithServer() {
-  const serverQuotes = await fetchServerQuotes();
+async function postQuotesToServer(quote) {
+  await fetch(SERVER_URL, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(quote),
+  });
+}
+
+async function syncQuotes() {
+  const serverQuotes = await fetchQuotesFromServer();
   const serverQuoteTexts = serverQuotes.map(quote => quote.text);
   const localQuoteTexts = quotes.map(quote => quote.text);
 
@@ -160,6 +170,12 @@ async function syncWithServer() {
       saveQuotes();
       populateCategories();
       alert("New quotes have been added from the server!");
+  }
+
+  // Find new local quotes and post them to the server
+  const newLocalQuotes = quotes.filter(quote => !serverQuoteTexts.includes(quote.text));
+  for (const quote of newLocalQuotes) {
+      await postQuotesToServer(quote);
   }
 
   // Optionally, we could implement further conflict resolution here
