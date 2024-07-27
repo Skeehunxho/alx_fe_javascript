@@ -4,6 +4,7 @@ let quotes = JSON.parse(localStorage.getItem('quotes')) || [{
 }];
 
 let categories = Array.from(new Set(quotes.map(quote => quote.category)));
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // Example server URL for simulation
 
 function saveQuotes() {
   localStorage.setItem('quotes', JSON.stringify(quotes));
@@ -137,4 +138,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const lastSelectedCategory = getLastSelectedCategory();
   document.getElementById('categoryFilter').value = lastSelectedCategory;
   filterQuotes();
+  syncWithServer();
+  setInterval(syncWithServer, 60000); // Sync with the server every minute
 });
+
+async function fetchServerQuotes() {
+  const response = await fetch(SERVER_URL);
+  const serverQuotes = await response.json();
+  return serverQuotes.map(item => ({ text: item.title, category: "Server" }));
+}
+
+async function syncWithServer() {
+  const serverQuotes = await fetchServerQuotes();
+  const serverQuoteTexts = serverQuotes.map(quote => quote.text);
+  const localQuoteTexts = quotes.map(quote => quote.text);
+
+  // Find new quotes from the server and add them to local quotes
+  const newQuotes = serverQuotes.filter(quote => !localQuoteTexts.includes(quote.text));
+  if (newQuotes.length > 0) {
+      quotes.push(...newQuotes);
+      saveQuotes();
+      populateCategories();
+      alert("New quotes have been added from the server!");
+  }
+
+  // Optionally, we could implement further conflict resolution here
+}
