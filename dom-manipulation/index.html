@@ -1,36 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Quote Generator</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Add some basic styles for the notification */
-        #notification {
-            display: none;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-size: 14px;
-            color: #333;
-        }
-    </style>
-</head>
-<body>
-    <div>
-        <select id="categoryFilter">
-            <option value="all">All Categories</option>
+    <title>Dynamic Quote Generator</title>
+  </head>
+  <body>
+    <div id="container-wrapper">
+      <h1>Dynamic Quote Generator</h1>
+      <p class="info">
+        Choose a category to generate an inspiring quote or add your favorite quote below.
+      </p>
+      <div class="catDiv">
+        <h3>Categories</h3>
+        <select name="quoteCat" id="quoteCat">
+          <option value="success">Success</option>
+          <option value="motivation">Motivation</option>
+          <option value="wisdom">Wisdom</option>
+          <option value="relationship">Relationship</option>
+          <option value="funny">Funny</option>
         </select>
-        <button id="exportQuotesButton">Export Quotes</button>
+        <select id="categoryFilter" onchange="filterQuotes()">
+          <option value="all">All Categories</option>
+          <!-- Dynamically populated categories -->
+      </select>
+      </div>
+      <button id="newQuote" class="btn">Show New Quote</button>
+
+      <div id="quoteDisplay"></div>
+
+      <div class="addQuoteForm">
+        <h3>Add New Quote</h3>
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+        <input id="newQuoteAuthor" type="text" placeholder="Enter author name" />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+        <button id="addQuoteBtn" class="btn">Add Quote</button>
+        <div class="divider"></div>
+
         <input type="file" id="importFile" accept=".json" />
+        <button id="exportBtn" class="btn">Export Quotes</button>
+
+        <div class="divider"></div>
+        <div class="resolveDiv">
+          <button onclick="resolveConflictsManually()" id="resolveBtn">Resolve Conflicts Manually</button>
+          <div id="notification"></div>
+        </div>
+
+      </div>
     </div>
-    <div id="quoteDisplay"></div>
-    <button id="newQuoteButton">New Quote</button>
-    <button id="addQuoteButton">Add Quote</button>
-    <div id="notification"></div> <!-- Notification element -->
-    <script src="scripts.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
